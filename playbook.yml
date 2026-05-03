@@ -35,3 +35,68 @@
       apt:
         upgrade: dist
         autoremove: yes
+
+        - name: 2.1 Create placeholder for VPN configuration
+      copy:
+        content: |
+          client
+          dev tun
+          proto udp
+          remote vpn.trading-infra.example 1194
+          resolv-retry infinite
+          nobind
+          persist-key
+          persist-tun
+          verb 3
+        dest: "/etc/openvpn/client/office_vpn.conf"
+        owner: root
+        group: root
+        mode: '0600'
+
+    - name: 3.1 Configure custom alias for log analysis
+      lineinfile:
+        path: "/home/{{ ansible_user_id }}/.bashrc"
+        line: "alias check_app_logs='grep -i \"error\" /var/log/syslog'"
+        regexp: '^alias check_app_logs='
+        state: present
+        create: yes
+
+    - name: 4.1 Ensure Docker is installed
+      apt:
+        name: docker.io
+        state: present
+
+    - name: 4.2 Start and enable Docker service
+      service:
+        name: docker
+        state: started
+        enabled: yes
+
+    - name: 4.3 Deploy PostgreSQL container for local testing
+      community.docker.docker_container:
+        name: "{{ db_container_name }}"
+        image: "postgres:{{ postgres_version }}"
+        state: started
+        restart_policy: always
+        env:
+          POSTGRES_PASSWORD: "secure_password_123"
+        published_ports:
+          - "5432:5432"
+
+    - name: 5.1 Install Node Exporter for monitoring metrics
+      get_url:
+        url: "https://github.com/prometheus/node_exporter/releases/download/v{{ node_exporter_version }}/node_exporter-{{ node_exporter_version }}.linux-amd64.tar.gz"
+        dest: "/tmp/node_exporter.tar.gz"
+
+    - name: 5.2 Extract Node Exporter binary
+      unarchive:
+        src: "/tmp/node_exporter.tar.gz"
+        dest: "/tmp"
+        remote_src: yes
+
+    - name: 5.3 Move binary to system path
+      copy:
+        src: "/tmp/node_exporter-{{ node_exporter_version }}.linux-amd64/node_exporter"
+        dest: "/usr/local/bin/node_exporter"
+        mode: '0755'
+        remote_src: yes
