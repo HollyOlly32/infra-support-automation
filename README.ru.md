@@ -32,10 +32,11 @@
 2. Запустите playbook:
 
    ansible-playbook -i inventory/hosts.ini playbook.yml --ask-become-pass -e "deploy_user=$USER" -e "postgres_password=ВашБезопасныйПароль" -e "vpn_server_address=vpn.вашакомпания.com"
+    > **Примечание:** В Codespaces просто нажмите `Enter` (пароль не требуется). Если увидите ошибку перезагрузки, добавьте `--skip-tags "patch,upgrade"` к команде.
 
-3. После завершения выйдите из системы и зайдите снова (или выполните: newgrp docker)
+4. После завершения выйдите из системы и зайдите снова (или выполните: newgrp docker)
 
-4. Проверьте работоспособность:
+5. Проверьте работоспособность:
 
    docker exec test_trading_db pg_isready -U postgres
    curl http://localhost:9100/metrics | head -3
