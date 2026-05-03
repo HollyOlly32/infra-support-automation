@@ -131,7 +131,6 @@
           alias check_ports='netstat -tulpn | grep LISTEN'
           alias docker_stats='docker stats --no-stream'
           alias psql_trading='docker exec -it test_trading_db psql -U postgres'
-          alias dps='docker ps --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"'
           alias dlogs='docker logs -f'
         marker: "# {mark} ANSIBLE MANAGED BLOCK - Support Engineer Aliases"
         create: yes
