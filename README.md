@@ -29,9 +29,10 @@ The goal of this project is to demonstrate **Infrastructure as Code (IaC)** prin
 
    ansible-galaxy collection install community.docker
 
-3. Run the playbook:
+2. Run the playbook:
 
    ansible-playbook -i inventory/hosts.ini playbook.yml --ask-become-pass -e "deploy_user=$USER" -e "postgres_password=YourSecurePassword" -e "vpn_server_address=vpn.yourcompany.com"
+   > **Note:** In Codespaces, just press `Enter` when asked for password. If you see a reboot error, add `--skip-tags "patch,upgrade"` to the command.
 
 4. After completion, log out and back in (or run: newgrp docker)
 
