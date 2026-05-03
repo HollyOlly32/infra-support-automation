@@ -44,4 +44,5 @@ The goal of this project is to demonstrate **Infrastructure as Code (IaC)** prin
 5. Verify everything works:
 
    docker exec test_trading_db pg_isready -U postgres
+
    curl http://localhost:9100/metrics | head -3
