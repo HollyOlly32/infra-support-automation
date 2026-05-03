@@ -134,11 +134,11 @@
         owner: root
         group: root
         mode: '0644'
-        
+
     - name: 5.5.1 Reload systemd daemon
       systemd:
-      daemon_reload: yes
-      
+        daemon_reload: yes
+
     - name: 5.6 Enable and start Node Exporter service
       service:
         name: node_exporter
