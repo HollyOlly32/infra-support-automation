@@ -123,20 +123,20 @@
     # Section 3: Bash Aliases for Support Engineer
     - name: 3.1 Configure custom aliases for log analysis
       blockinfile:
-        path: "{{ user_info['passwd'][0][4] }}/.bashrc"
+        path: "/home/codespace/.bashrc"
         block: |
           # Custom aliases for Support Engineer
           alias check_app_logs='grep -i "error" /var/log/syslog | tail -20'
           alias watch_logs='tail -f /var/log/syslog'
           alias check_ports='netstat -tulpn | grep LISTEN'
           alias docker_stats='docker stats --no-stream'
-          alias psql_trading='docker exec -it {{ db_container_name }} psql -U postgres'
+          alias psql_trading='docker exec -it test_trading_db psql -U postgres'
           alias dps='docker ps --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"'
           alias dlogs='docker logs -f'
         marker: "# {mark} ANSIBLE MANAGED BLOCK - Support Engineer Aliases"
         create: yes
-        owner: "{{ deploy_user }}"
-        group: "{{ deploy_user }}"
+        owner: "codespace"
+        group: "codespace"
         mode: '0644'
 
     # Section 4: Docker and PostgreSQL
