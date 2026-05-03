@@ -44,4 +44,5 @@
 5. Проверьте работоспособность:
 
    docker exec test_trading_db pg_isready -U postgres
+
    curl http://localhost:9100/metrics | head -3
