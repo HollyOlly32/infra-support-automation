@@ -2,13 +2,13 @@
 - name: Support Engineer Infrastructure Setup
   hosts: support_workstation
   become: true
-  
+
   vars:
     # Software versions and settings
     postgres_version: "15"
     db_container_name: "test_trading_db"
     node_exporter_version: "1.7.0"
-    
+
     # Essential packages for support engineer
     support_packages:
       - htop
@@ -16,7 +16,7 @@
       - git
       - net-tools
       - vim
-      - telnet
+      - netcat-openbsd   # ИЗМЕНЕНО: telnet заменён на netcat (не передаёт данные в открытом виде)
       - openvpn
 
   tasks:
@@ -35,6 +35,8 @@
       apt:
         upgrade: dist
         autoremove: yes
+      # ВНИМАНИЕ: dist-upgrade может обновить ядро. Запускайте осознанно,
+      # либо добавьте тег: tags: [patch] и запускайте через --tags patch
 
     - name: 2.1 Create placeholder for VPN configuration
       copy:
@@ -52,10 +54,15 @@
         owner: root
         group: root
         mode: '0600'
+      # ВНИМАНИЕ: адрес vpn.trading-infra.example — placeholder.
+      # Замените на реальный адрес VPN-сервера перед запуском.
 
     - name: 3.1 Configure custom alias for log analysis
+      # ИЗМЕНЕНО: ansible_user_id при become:true возвращает root.
+      # Используем отдельную переменную deploy_user, которую нужно передать при запуске:
+      #   ansible-playbook playbook.yml -e "deploy_user=youruser"
       lineinfile:
-        path: "/home/{{ ansible_user_id }}/.bashrc"
+        path: "/home/{{ deploy_user }}/.bashrc"
         line: "alias check_app_logs='grep -i \"error\" /var/log/syslog'"
         regexp: '^alias check_app_logs='
         state: present
@@ -79,7 +86,11 @@
         state: started
         restart_policy: always
         env:
-          POSTGRES_PASSWORD: "secure_password_123"
+          # ИСПРАВЛЕНО: пароль вынесен в переменную.
+          # Задайте через ansible-vault или передайте при запуске:
+          #   ansible-playbook playbook.yml -e "postgres_password=ВашПароль"
+          # Либо создайте vault-файл: ansible-vault create vault.yml
+          POSTGRES_PASSWORD: "{{ postgres_password }}"
         published_ports:
           - "5432:5432"
 
@@ -104,3 +115,28 @@
         dest: "/usr/local/bin/node_exporter"
         mode: '0755'
         remote_src: yes
+
+    - name: 5.5 Create Node Exporter systemd service
+      copy:
+        dest: /etc/systemd/system/node_exporter.service
+        content: |
+          [Unit]
+          Description=Prometheus Node Exporter
+          After=network.target
+
+          [Service]
+          User=nobody
+          ExecStart=/usr/local/bin/node_exporter
+          Restart=on-failure
+
+          [Install]
+          WantedBy=multi-user.target
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: 5.6 Enable and start Node Exporter service
+      service:
+        name: node_exporter
+        state: started
+        enabled: yes
