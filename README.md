@@ -22,9 +22,9 @@ The goal of this project is to demonstrate **Infrastructure as Code (IaC)** prin
 * **Binary Management:** Experience with automated downloading (via `get_url`) and manual installation of system binaries.
 
 ## How to Run
-1. Ensure Ansible is installed on your local machine.
-2. Install the required Docker collection:
-```bash
+1. Install Ansible and Docker (Ubuntu 22.04/24.04):
+   ```bash
+   sudo apt update && sudo apt install -y ansible docker.io
    ansible-galaxy collection install community.docker
 ```
 3. Run the playbook:
