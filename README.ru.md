@@ -33,6 +33,7 @@
 
    ansible-playbook -i inventory/hosts.ini playbook.yml --ask-become-pass -e "deploy_user=$USER" -e "postgres_password=ВашБезопасныйПароль" -e "vpn_server_address=vpn.вашакомпания.com"
     >  В Codespaces просто нажмите `Enter` (пароль не требуется). Если увидите ошибку перезагрузки, добавьте `--skip-tags "patch,upgrade"` к команде.
+    
     > Если вы видите предупреждения `ignore_errors` о перезагрузке или сервисе Docker — просто игнорируйте их. PostgreSQL и Node Exporter всё равно будут работать. Если контейнер PostgreSQL не запустился автоматически, выполните:
 > ```bash
 > docker run -d --name test_trading_db -e POSTGRES_PASSWORD=ВашПароль -e POSTGRES_USER=postgres -e POSTGRES_DB=trading_db postgres:15
