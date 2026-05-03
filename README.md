@@ -27,7 +27,7 @@ The goal of this project is to demonstrate **Infrastructure as Code (IaC)** prin
    sudo apt update && sudo apt install -y ansible docker.io
    ansible-galaxy collection install community.docker
 ```
-3. Run the playbook:
+2. Run the playbook:
 ```bash
    ansible-playbook -i inventory/hosts.ini playbook.yml \
      -e "deploy_user=youruser" \
