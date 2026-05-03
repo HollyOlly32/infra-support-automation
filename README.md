@@ -33,7 +33,7 @@ The goal of this project is to demonstrate **Infrastructure as Code (IaC)** prin
 
    ansible-playbook -i inventory/hosts.ini playbook.yml --ask-become-pass -e "deploy_user=$USER" -e "postgres_password=YourSecurePassword" -e "vpn_server_address=vpn.yourcompany.com"
    > **Note:** In Codespaces, just press `Enter` when asked for password. If you see a reboot error, add `--skip-tags "patch,upgrade"` to the command.
-   >  **Note for Codespaces:**
+
    > If you see any `ignore_errors` warnings about reboot or Docker service — just ignore them. PostgreSQL and Node Exporter will still work. If PostgreSQL container fails to start automatically, run:
 > ```bash
 > docker run -d --name test_trading_db -e POSTGRES_PASSWORD=YourSecurePassword -e POSTGRES_USER=postgres -e POSTGRES_DB=trading_db postgres:15
