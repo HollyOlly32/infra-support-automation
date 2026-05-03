@@ -24,20 +24,17 @@ The goal of this project is to demonstrate **Infrastructure as Code (IaC)** prin
 ## How to Run
 
 1. Install Ansible and Docker (Ubuntu 22.04/24.04):
-   ```bash
+
    sudo apt update && sudo apt install -y ansible docker.io
    ansible-galaxy collection install community.docker
+
 2. Run the playbook:
 
-  ```bash
-   ansible-playbook -i inventory/hosts.ini playbook.yml \
-  --ask-become-pass \
-  -e "deploy_user=$USER" \
-  -e "postgres_password=YourSecurePassword" \
-  -e "vpn_server_address=vpn.yourcompany.com"
+   ansible-playbook -i inventory/hosts.ini playbook.yml --ask-become-pass -e "deploy_user=$USER" -e "postgres_password=YourSecurePassword" -e "vpn_server_address=vpn.yourcompany.com"
 
-3. After completion, log out and back in (or run newgrp docker)
+3. After completion, log out and back in (or run: newgrp docker)
+
 4. Verify everything works:
-   ```bash
-docker exec test_trading_db pg_isready -U postgres
-curl http://localhost:9100/metrics | head -3
+
+   docker exec test_trading_db pg_isready -U postgres
+   curl http://localhost:9100/metrics | head -3
