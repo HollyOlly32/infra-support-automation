@@ -83,7 +83,7 @@
         published_ports:
           - "5432:5432"
 
-   - name: 5.1 Set architecture map
+    - name: 5.1 Set architecture map
       set_fact:
         node_arch: "{{ 'arm64' if ansible_architecture == 'aarch64' or ansible_architecture == 'arm64' else 'amd64' }}"
 
