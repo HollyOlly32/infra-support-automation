@@ -83,20 +83,24 @@
         published_ports:
           - "5432:5432"
 
-    - name: 5.1 Install Node Exporter for monitoring metrics
+   - name: 5.1 Set architecture map
+      set_fact:
+        node_arch: "{{ 'arm64' if ansible_architecture == 'aarch64' or ansible_architecture == 'arm64' else 'amd64' }}"
+
+    - name: 5.2 Install Node Exporter for monitoring metrics
       get_url:
-        url: "https://github.com/prometheus/node_exporter/releases/download/v{{ node_exporter_version }}/node_exporter-{{ node_exporter_version }}.linux-amd64.tar.gz"
+        url: "https://github.com/prometheus/node_exporter/releases/download/v{{ node_exporter_version }}/node_exporter-{{ node_exporter_version }}.linux-{{ node_arch }}.tar.gz"
         dest: "/tmp/node_exporter.tar.gz"
 
-    - name: 5.2 Extract Node Exporter binary
+    - name: 5.3 Extract Node Exporter binary
       unarchive:
         src: "/tmp/node_exporter.tar.gz"
         dest: "/tmp"
         remote_src: yes
 
-    - name: 5.3 Move binary to system path
+    - name: 5.4 Move binary to system path
       copy:
-        src: "/tmp/node_exporter-{{ node_exporter_version }}.linux-amd64/node_exporter"
+        src: "/tmp/node_exporter-{{ node_exporter_version }}.linux-{{ node_arch }}/node_exporter"
         dest: "/usr/local/bin/node_exporter"
         mode: '0755'
         remote_src: yes
