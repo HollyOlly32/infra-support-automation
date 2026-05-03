@@ -36,7 +36,7 @@
         upgrade: dist
         autoremove: yes
 
-        - name: 2.1 Create placeholder for VPN configuration
+    - name: 2.1 Create placeholder for VPN configuration
       copy:
         content: |
           client
